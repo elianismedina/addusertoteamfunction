@@ -8,10 +8,10 @@ export default async function (req, res) {
   const { userId, teamId, email, name, roles } = body;
 
   if (!userId || !teamId || !email) {
-    return res.json(
-      { error: "Missing required fields: userId, teamId, email" },
-      400
-    );
+    return {
+      json: { error: "Missing required fields: userId, teamId, email" },
+      status: 400
+    };
   }
 
   const client = new sdk.Client();
@@ -31,8 +31,14 @@ export default async function (req, res) {
       userId,
       name || undefined
     );
-    return res.json({ success: true, membership });
+    return {
+      json: { success: true, membership },
+      status: 200
+    };
   } catch (error) {
-    return res.json({ error: error.message }, 500);
+    return {
+      json: { error: error.message },
+      status: 500
+    };
   }
 }
