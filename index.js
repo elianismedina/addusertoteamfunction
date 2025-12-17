@@ -3,7 +3,10 @@
 
 import * as sdk from "node-appwrite";
 
-export default async function (req, res) {
+export default async ({ req, log, error }) => {
+  log("Function started");
+  log("Request body:", req.body);
+
   const body = req.body || {};
   const { userId, teamId, email, name, roles } = body;
 
@@ -31,14 +34,18 @@ export default async function (req, res) {
       userId,
       name || undefined
     );
+    log("Team assignment success", membership);
     return {
       json: { success: true, membership },
       status: 200
     };
-  } catch (error) {
+  } catch (err) {
+    error("Team assignment failed:", err.message, err);
     return {
-      json: { error: error.message },
+      json: { error: err.message },
       status: 500
     };
   }
-}
+};
+
+
