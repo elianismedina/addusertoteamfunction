@@ -1,9 +1,9 @@
 // Appwrite Function: Add User to Team
 // Environment variables required: APPWRITE_API_KEY, APPWRITE_PROJECT_ID
 
-const sdk = require("node-appwrite");
+import sdk from "node-appwrite";
 
-module.exports = async function (req, res) {
+export default async function (req, res) {
   const { userId, teamId, email, name, roles } = req.body;
 
   if (!userId || !teamId || !email) {
@@ -34,4 +34,4 @@ module.exports = async function (req, res) {
   } catch (error) {
     return res.json({ error: error.message }, 500);
   }
-};
+}
