@@ -3,14 +3,35 @@
 
 import * as sdk from "node-appwrite";
 
-export default async ({ req, log, error }) => {
   log("Function started");
   log("Request body:", req.body);
 
-  const body = req.body || {};
-  const { userId, teamId, email, name, roles } = body;
+  // Defensive: parse body if needed
+  let body = req.body;
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+      log("Parsed body:", body);
+    } catch (e) {
+      error("Failed to parse body as JSON", e);
+      return {
+        json: { error: "Invalid JSON body" },
+        status: 400
+      };
+    }
+  }
+
+  const { userId, teamId, email, name, roles } = body || {};
+  log(
+    "userId:", userId,
+    "teamId:", teamId,
+    "email:", email,
+    "name:", name,
+    "roles:", roles
+  );
 
   if (!userId || !teamId || !email) {
+    error("Missing required fields", { userId, teamId, email });
     return {
       json: { error: "Missing required fields: userId, teamId, email" },
       status: 400
@@ -30,11 +51,11 @@ export default async ({ req, log, error }) => {
       teamId,
       email,
       roles || ["ALIADO"],
-      undefined, // URL for invitation (not needed for direct add)
+      undefined, // No invite URL
       userId,
       name || undefined
     );
-    log("Team assignment success", membership);
+    log("Membership created:", membership);
     return {
       json: { success: true, membership },
       status: 200
@@ -46,6 +67,7 @@ export default async ({ req, log, error }) => {
       status: 500
     };
   }
+};
 };
 
 
