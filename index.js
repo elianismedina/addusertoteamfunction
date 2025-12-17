@@ -9,6 +9,13 @@ export default async ({ req, log, error }) => {
   // Defensive: parse body if needed
   let body = req.body;
   if (typeof body === "string") {
+    if (!body.trim()) {
+      error("Empty request body");
+      return {
+        json: { error: "Request body is empty" },
+        status: 400
+      };
+    }
     try {
       body = JSON.parse(body);
       log("Parsed body:", body);
