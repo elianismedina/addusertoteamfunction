@@ -4,7 +4,8 @@
 import * as sdk from "node-appwrite";
 
 export default async function (req, res) {
-  const { userId, teamId, email, name, roles } = req.body;
+  const body = req.body || {};
+  const { userId, teamId, email, name, roles } = body;
 
   if (!userId || !teamId || !email) {
     return res.json(
